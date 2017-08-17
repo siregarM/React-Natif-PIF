@@ -29,7 +29,7 @@ export const signInUser = ({ email, password }) => (dispatch) => {
 
       dispatch(reset('signin'));
 
-      Actions.post();
+      Actions.menu();
     })
     .catch((error) => { dispatch({ type: SIGN_IN_FAILURE, payload: authFailMessage(error.code) }); });
 };
@@ -46,7 +46,7 @@ export const signUpUser = ({ email, password, firstname, lastname }) => (dispatc
 
           dispatch(reset('signup'));
 
-          Actions.post();
+          Actions.menu();
         });
     })
     .catch((error) => { dispatch({ type: SIGN_UP_FAILURE, payload: authFailMessage(error.code) }); });

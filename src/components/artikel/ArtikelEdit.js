@@ -1,27 +1,41 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, View } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
-import { Container, Item, Button, Input, Spinner } from '../common';
-import styles from './postStyle';
+import { Container, Item, Button, Input, Spinner, Confirm } from '../common';
+import styles from './artikelStyle';
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  postError: PropTypes.string.isRequired,
+  artikelError: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  createPost: PropTypes.func.isRequired,
+  updateArtikel: PropTypes.func.isRequired,
+  deleteArtikel: PropTypes.func.isRequired,
+  artikel: PropTypes.object.isRequired,
 };
 
-class PostCreate extends Component {
+class ArtikelEdit extends Component {
   constructor(props) {
     super(props);
 
+    this.state = { modal: false };
+
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.onAccept = this.onAccept.bind(this);
+    this.onDecline = this.onDecline.bind(this);
+  }
+
+  onAccept() {
+    this.props.deleteArtikel({ uid: this.props.artikel.uid });
+  }
+
+  onDecline() {
+    this.setState({ modal: false });
   }
 
   handleFormSubmit(props) {
-    const { title, description, cost } = props;
+    const { title, description, uid } = props;
 
-    this.props.createPost({ title, description, cost });
+    this.props.updateArtikel({ title, description, uid });
   }
 
   render() {
@@ -46,18 +60,11 @@ class PostCreate extends Component {
             containerStyle={{ height: 70 }}
           />
         </Item>
-        <Item>
-          <Field
-            name="cost"
-            placeholder="Cost"
-            component={Input}
-          />
-        </Item>
 
-        {this.props.postError
+        {this.props.artikelError
           ?
             <Text style={styles.error}>
-              {this.props.postError}
+              {this.props.artikelError}
             </Text>
           :
             <View />}
@@ -69,8 +76,25 @@ class PostCreate extends Component {
             </Item>
           :
             <Item>
-              <Button onPress={handleSubmit(this.handleFormSubmit)}>Create</Button>
+              <Button onPress={handleSubmit(this.handleFormSubmit)}>Update</Button>
             </Item>}
+
+        <Item>
+          <Button
+            buttonStyle={{ backgroundColor: '#e62117' }}
+            onPress={() => this.setState({ modal: !this.state.modal })}
+          >
+            Delete
+          </Button>
+        </Item>
+
+        <Confirm
+          visible={this.state.modal}
+          onAccept={this.onAccept}
+          onDecline={this.onDecline}
+        >
+          Are you sure you want to delete this?
+        </Confirm>
       </Container>
     );
   }
@@ -78,7 +102,7 @@ class PostCreate extends Component {
 
 const validate = (props) => {
   const errors = {};
-  const fields = ['title', 'description', 'cost'];
+  const fields = ['title', 'description'];
 
   fields.forEach((f) => {
     if (!(f in props)) {
@@ -97,16 +121,11 @@ const validate = (props) => {
   } else if (props.description && props.description.length > 100) {
     errors.description = 'Maximum of 100 characters';
   }
-  if (props.cost && props.cost.length < 4) {
-    errors.cost = 'Minimum of 4 characters';
-  } else if (props.cost && props.cost.length > 20) {
-    errors.cost = 'Maximum of 20 characters';
-  }
 
   return errors;
 };
 
-PostCreate.propTypes = propTypes;
-PostCreate = reduxForm({ form: 'postcreate', validate })(PostCreate);
+ArtikelEdit.propTypes = propTypes;
+ArtikelEdit = reduxForm({ form: 'artikeledit', validate })(ArtikelEdit);
 
-export default PostCreate;
+export default ArtikelEdit;

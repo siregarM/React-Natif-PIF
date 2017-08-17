@@ -33,9 +33,9 @@ class PostEdit extends Component {
   }
 
   handleFormSubmit(props) {
-    const { title, description, uid } = props;
+    const { title, description, cost, uid } = props;
 
-    this.props.updatePost({ title, description, uid });
+    this.props.updatePost({ title, description, cost, uid });
   }
 
   render() {
@@ -58,6 +58,14 @@ class PostEdit extends Component {
             component={Input}
             multiline
             containerStyle={{ height: 70 }}
+          />
+        </Item>
+
+        <Item>
+          <Field
+            name="cost"
+            placeholder="Cost"
+            component={Input}
           />
         </Item>
 
@@ -102,7 +110,7 @@ class PostEdit extends Component {
 
 const validate = (props) => {
   const errors = {};
-  const fields = ['title', 'description'];
+  const fields = ['title', 'description', 'cost'];
 
   fields.forEach((f) => {
     if (!(f in props)) {
@@ -120,6 +128,12 @@ const validate = (props) => {
     errors.description = 'Minimum of 12 characters';
   } else if (props.description && props.description.length > 100) {
     errors.description = 'Maximum of 100 characters';
+  }
+
+  if (props.cost && props.cost.length < 4) {
+    errors.cost = 'Minimum of 4 characters';
+  } else if (props.cost && props.cost.length > 20) {
+    errors.title = 'Maximum of 20 characters';
   }
 
   return errors;

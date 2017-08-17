@@ -94,7 +94,7 @@ class Signup extends Component {
             </Item>
           :
             <Item>
-              <Button onPress={handleSubmit(this.handleFormSubmit)}>Log in</Button>
+              <Button onPress={handleSubmit(this.handleFormSubmit)}>Submit</Button>
             </Item>}
 
         <Item>

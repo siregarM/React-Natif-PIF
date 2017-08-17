@@ -2,16 +2,16 @@ import React, { Component, PropTypes } from 'react';
 import { Text, View } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import { Container, Item, Button, Input, Spinner } from '../common';
-import styles from './postStyle';
+import styles from './artikelStyle';
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  postError: PropTypes.string.isRequired,
+  artikelError: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  createPost: PropTypes.func.isRequired,
+  createArtikel: PropTypes.func.isRequired,
 };
 
-class PostCreate extends Component {
+class ArtikelCreate extends Component {
   constructor(props) {
     super(props);
 
@@ -19,9 +19,9 @@ class PostCreate extends Component {
   }
 
   handleFormSubmit(props) {
-    const { title, description, cost } = props;
+    const { title, description } = props;
 
-    this.props.createPost({ title, description, cost });
+    this.props.createArtikel({ title, description });
   }
 
   render() {
@@ -46,18 +46,11 @@ class PostCreate extends Component {
             containerStyle={{ height: 70 }}
           />
         </Item>
-        <Item>
-          <Field
-            name="cost"
-            placeholder="Cost"
-            component={Input}
-          />
-        </Item>
 
-        {this.props.postError
+        {this.props.artikelError
           ?
             <Text style={styles.error}>
-              {this.props.postError}
+              {this.props.artikelError}
             </Text>
           :
             <View />}
@@ -78,7 +71,7 @@ class PostCreate extends Component {
 
 const validate = (props) => {
   const errors = {};
-  const fields = ['title', 'description', 'cost'];
+  const fields = ['title', 'description'];
 
   fields.forEach((f) => {
     if (!(f in props)) {
@@ -97,16 +90,11 @@ const validate = (props) => {
   } else if (props.description && props.description.length > 100) {
     errors.description = 'Maximum of 100 characters';
   }
-  if (props.cost && props.cost.length < 4) {
-    errors.cost = 'Minimum of 4 characters';
-  } else if (props.cost && props.cost.length > 20) {
-    errors.cost = 'Maximum of 20 characters';
-  }
 
   return errors;
 };
 
-PostCreate.propTypes = propTypes;
-PostCreate = reduxForm({ form: 'postcreate', validate })(PostCreate);
+ArtikelCreate.propTypes = propTypes;
+ArtikelCreate = reduxForm({ form: 'artikelcreate', validate })(ArtikelCreate);
 
-export default PostCreate;
+export default ArtikelCreate;
